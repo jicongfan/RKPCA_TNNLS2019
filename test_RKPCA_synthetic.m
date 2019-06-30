@@ -7,10 +7,10 @@ K=1;% number of subspaces
 m=20;
 n0=100;
 r=2;
-for u=1:5
+for u=1:1
     X=[]
     for k=1:K
-%         X=[X randn(m,r)*randn(r,n0)]; multiple linear subspaces
+%         X=[X randn(m,r)*randn(r,n0)]; % multiple linear subspaces
           Z=unifrnd(-1,1,r,n0);
           X=[X randn(m,r)*Z+0.5*randn(m,r)*Z.^2+0.5*randn(m,r)*Z.^3]; % multiple nonlinear subspaces
     end
@@ -30,12 +30,13 @@ end
 [~,idx]=min(e_temp_rpca);
 Xr{1}=X_rpca{idx};
 %% RKPCA
-k=k+1;
+ker.type='rbf';
 ker.par=[0];
 par=[0.1:0.05:0.5];% lambda
-p=1; % p=1 or 0.5
+options.p=1;
+%options.r_svd=1;
 for i=1:length(par)
-    [X_rkpca{i},E_t,f]=RKPCA_PLM(Xn,ker,par(i),p,500);
+    [X_rkpca{i},E_t,f]=RKPCA_PLMAdSS(Xn,ker,par(i),options);
     e_temp_rkpca(i)=norm(X-X_rkpca{i},'fro')/norm(X,'fro');
 end
 [~,idx]=min(e_temp_rkpca);
